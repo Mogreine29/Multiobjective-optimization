@@ -1,1 +1,1 @@
-# Multiobjective-optimization
+PLS (Pareto Local Search) algorithm for solving multi-objective assignment problem
