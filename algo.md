@@ -15,6 +15,6 @@ while P != 0 do
 P<-Pa
 Pa<-0
 ```
-with A = initial solutions to explore
-Pa = interesting solutions to explore further
-N(x) denotes neighboorhood of x and Update() the Pareto Archive (A)
+with A = initial solutions to explore  
+Pa = interesting solutions to explore further  
+N(x) denotes neighboorhood of x and Update() the Pareto Archive (A)  
