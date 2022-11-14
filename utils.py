@@ -94,6 +94,7 @@ def hypervolume(ref_point,A):
 # combinaisons linéaires des objectifs
 # -> si on intensifie autour des solutions optimales peut être pas toujours intéressant
 # il faut diversifier
+# si on swap tout alors (n*(n+1))//2 possibilités de swap 
 def voisinage(x):
     pass
 
