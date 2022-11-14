@@ -7,7 +7,7 @@ nombre_objectif = 2
 d = read_data(file_name, nombre_objectif)
 mx = get_matrix(file_name, nombre_objectif)
 
-sl = init_solution(mx, 8, 2, 1)
+sl = init_solution(mx, 2, 1)
 
 for c in sl:
     print(score(c,d,2))
