@@ -2,6 +2,7 @@ from collections import defaultdict
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from itertools import product
+from pymoo.indicators.hv import HV #pip install pymoo
 
 # lit les données et return un dictionnaire (machine, job): [f obj1, f obj2]
 def read_data(file_name, nobj):
@@ -64,4 +65,21 @@ def score(sol, d, nobj):
     for i,v in enumerate(sol):
         obj+=d[(i,v)]      
     return obj
+
+
+#calcul du hypervolume
+def hypervolume(ref_point,A):
+    '''
+    ref_point = [x,y,z]
+    A = np.array(np.array())
+    '''
+    ref_point = np.array(ref_point)
+    A = np.array(A)
+    print(A)
+    ind = HV(ref_point=ref_point)
+    return ind(A)
+
+# fonction qui prend en entrée un vecteur de solutions et return les solutions uniques
+def clean_solutions(sols):
+    return np.unique(sols, axis=0)
 
