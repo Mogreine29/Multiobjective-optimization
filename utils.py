@@ -52,7 +52,9 @@ def init_solution(mx, nobj, max_coef):
             m+=z*mx[i]
         row_ind, col_ind = linear_sum_assignment(m)
         sols.append(col_ind) 
-    return sols 
+    # on veut les solutions uniques
+    solutions = np.unique(sols, axis=0) 
+    return solutions
 
 
 # fonction qui calcule le score d'une solution
@@ -63,7 +65,3 @@ def score(sol, d, nobj):
         obj+=d[(i,v)]      
     return obj
 
-
-# fonction qui prend en entrée un vecteur de solutions et return les solutions uniques
-def clean_solutions(sols):
-    return np.unique(sols, axis=0)
