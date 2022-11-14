@@ -2,7 +2,7 @@ from collections import defaultdict
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from itertools import product
-from pymoo.indicators.hv import HV #pip install pymoo
+from pymoo.indicators.hv import HV 
 
 # lit les données et return un dictionnaire (machine, job): [f obj1, f obj2]
 def read_data(file_name, nobj):
@@ -54,20 +54,27 @@ def init_solution(mx, nobj, max_coef):
         row_ind, col_ind = linear_sum_assignment(m)
         sols.append(col_ind) 
     # on veut les solutions uniques
-    solutions = np.unique(sols, axis=0) 
+    solutions = np.unique(sols, axis=0)
     return solutions
 
+# permet de lier à chaque solution trouvée son score au format {score:solution}
+def generate_solution(solutions, d, nobj):
+    # stocker les vecteurs de solutions sous la forme d'un dico {(f1,f2,..): [vecteur]}
+    score_dict = dict()
+    for sol in solutions:
+        score_dict[tuple(score(sol, d, nobj))] = sol 
+    return score_dict
 
 # fonction qui calcule le score d'une solution
 # entrée = vecteur sol, d = dictionnaire qui stocke les données et nbre objectifs
 def score(sol, d, nobj):
-    obj = np.zeros(shape=(1,nobj))
+    obj = np.zeros(nobj)
     for i,v in enumerate(sol):
         obj+=d[(i,v)]      
     return obj
 
 
-#calcul du hypervolume
+# calcul du hypervolume
 def hypervolume(ref_point,A):
     '''
     ref_point = [x,y,z]
@@ -79,7 +86,17 @@ def hypervolume(ref_point,A):
     ind = HV(ref_point=ref_point)
     return ind(A)
 
-# fonction qui prend en entrée un vecteur de solutions et return les solutions uniques
-def clean_solutions(sols):
-    return np.unique(sols, axis=0)
 
+
+# voisinage d'une solution
+# pour le cas 1 on a déjà 6 solutions optimales à l'initialisation en optimisant des 
+# combinaisons linéaires des objectifs
+# -> si on intensifie autour des solutions optimales peut être pas toujours intéressant
+# il faut diversifier
+def voisinage(x):
+    pass
+
+
+# fonction qui cherche dominance -> il faut une f obj > et les autres >=
+def domine(x, y):
+    return (x<=y).all() and (x<y).any()
