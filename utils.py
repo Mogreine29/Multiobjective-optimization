@@ -97,6 +97,26 @@ def voisinage(x):
     pass
 
 
-# fonction qui cherche dominance -> il faut une f obj > et les autres >=
+# fonction qui cherche dominance x domine y 
+# -> il faut une f obj > et les autres >=
 def domine(x, y):
+    x = np.array(x)
+    y = np.array(y)
     return (x<=y).all() and (x<y).any()
+
+# TODO: pas optimal de mettre à jour comme ça en terme de complexité algorithmique-> réfléchir à une méthode plus intelligente
+# x = archive, y = nouvelle solution
+# si y est dominé par x alors pas d'update, si y pas dominé alors y dans archive et supprimer de l'archive les solutions dominées par y
+def update(x,y):
+    # si y dominé par une des solutions de x alors on ne met pas à jour
+    for sol in x:
+        if domine(sol, y):
+            return x 
+    # si pas alors on garde seulemlent les solutions non dominées
+    good = list()
+    for sol in x:
+        if not domine(y, sol):
+            good.append(sol)
+    good.append(y) 
+    return good
+
