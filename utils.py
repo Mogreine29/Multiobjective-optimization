@@ -36,7 +36,7 @@ def get_matrix(file_name, nobj):
 # objectif = trouver la solution exacte pour chaque objectif séparément pour trouver les valeurs extrêmes
 # size = coef
 # nobjectif
-def init_solution(mx, size, nobj, max_coef):
+def init_solution(mx, nobj, max_coef):
     # génération de coefficients pour les combinaisons linéaires des fonctions objectifs
     x = [int(i) for i in range(max_coef+1)]
     coef = []
@@ -47,7 +47,7 @@ def init_solution(mx, size, nobj, max_coef):
     # multiplication des fonctions objectifs par ces coefficients et calcul du vecteur optimale pour chaque combinaison linéaire
     sols = []
     for c in coef:
-        m = np.zeros(shape=(size, size))
+        m = np.zeros(shape=(mx[0].shape[0], mx[0].shape[1]))
         for i,z in enumerate(c):
             m+=z*mx[i]
         row_ind, col_ind = linear_sum_assignment(m)
