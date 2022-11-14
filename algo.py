@@ -1,4 +1,4 @@
-from utils import get_matrix, init_solution, read_data, score
+from utils import clean_solutions, get_matrix, init_solution, read_data, score
 
 file_name = "Data/LAP-8-2objSOL.txt"
 nombre_objectif = 2
@@ -7,9 +7,12 @@ nombre_objectif = 2
 d = read_data(file_name, nombre_objectif)
 mx = get_matrix(file_name, nombre_objectif)
 
-sl = init_solution(mx, 2, 1)
 
-for c in sl:
-    print(score(c,d,2))
+# Initialisation des solutions
+sol = clean_solutions(init_solution(mx, 2, 10))
+
+for s in sol:
+    print(score(s,d,2))
+
 
 

@@ -64,3 +64,6 @@ def score(sol, d, nobj):
     return obj
 
 
+# fonction qui prend en entrée un vecteur de solutions et return les solutions uniques
+def clean_solutions(sols):
+    return np.unique(sols, axis=0)
