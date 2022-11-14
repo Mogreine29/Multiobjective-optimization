@@ -38,12 +38,12 @@ def get_matrix(file_name, nobj):
 # nobjectif
 def init_solution(mx, nobj, max_coef):
     # génération de coefficients pour les combinaisons linéaires des fonctions objectifs
+    # TODO si rapport coef est le même alors pas besoin car on connait déjà -> exemple (2,2) similaire à (1,1) : trier ici directement au lieu de trier les solutions après
     x = [int(i) for i in range(max_coef+1)]
     coef = []
     for iter in product(x,repeat = nobj):
         if sum(iter)>0:
             coef.append(iter)
-    
     # multiplication des fonctions objectifs par ces coefficients et calcul du vecteur optimale pour chaque combinaison linéaire
     sols = []
     for c in coef:
