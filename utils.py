@@ -1,7 +1,7 @@
 from collections import defaultdict
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from itertools import product
+from itertools import product, permutations
 from pymoo.indicators.hv import HV 
 
 # lit les données et return un dictionnaire (machine, job): [f obj1, f obj2]
@@ -45,7 +45,7 @@ def init_solution(mx, nobj, max_coef):
     for iter in product(x,repeat = nobj):
         if sum(iter)>0:
             coef.append(iter)
-    # multiplication des fonctions objectifs par ces coefficients et calcul du vecteur optimale pour chaque combinaison linéaire
+    # multiplication des fonctions objectifs par ces coefficients et calcul du vecteur optimal pour chaque combinaison linéaire
     sols = []
     for c in coef:
         m = np.zeros(shape=(mx[0].shape[0], mx[0].shape[1]))
@@ -72,7 +72,7 @@ def score(sol, d, nobj):
     obj = np.zeros(nobj)
     for i,v in enumerate(sol):
         obj+=d[(i,v)]      
-    return obj
+    return tuple(obj)
 
 
 # calcul du hypervolume
@@ -96,7 +96,10 @@ def hypervolume(ref_point,A):
 # il faut diversifier
 # si on swap tout alors (n*(n+1))//2 possibilités de swap 
 def voisinage(x):
-    pass
+    # attention ici on return toutes les permutations possibles = len(x)! possibilités
+    # l'idée est d'explorer les voisins pour arriver à un meilleur et dès qu'on a un meilleur alors on stop l'exploration
+    # il faudra probablement modifier cela après
+    return list(map(np.array, permutations(x)))
 
 
 # fonction qui cherche dominance x domine y 
@@ -106,6 +109,15 @@ def domine(x, y):
     y = np.array(y)
     return (x<=y).all() and (x<y).any()
 
+# check si un nouveau score domine au moins un des scores des solutions actuelles de l'archive x
+# TODO : probablement possible d'avoir une meilleure complexité
+def check_domine_diff(new_score, x):
+    for score in x:
+        if domine(score, new_score):
+            return False 
+    if new_score not in x:  
+        return True 
+    return False  
 
 # TODO: pas optimal de mettre à jour comme ça en terme de complexité algorithmique-> réfléchir à une méthode plus intelligente
 # x = archive, y = nouvelle solution
