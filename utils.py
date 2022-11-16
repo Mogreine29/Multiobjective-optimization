@@ -81,8 +81,8 @@ def hypervolume(ref_point, A):
     A = np.array(list(A))
     ind = HV(ref_point=ref_point)
     hpv = ind(A)
-    return (hpv/np.prod(ref_point))*100
-
+    volume = (np.prod(ref_point, dtype=np.float64))
+    return (hpv/volume)*100
 
 # voisinage d'une solution
 # pour le cas 1 on a déjà 6 solutions optimales à l'initialisation en optimisant des 
@@ -134,3 +134,9 @@ def update(x,y):
     return good
 
 
+# écrire un fichier avec les solutions pour pouvoir comparer facilement
+def write(sols, filename):
+    filename = filename.split('/')[-1]
+    with open(f'Data/solutions/{filename}', 'w') as fout:
+        for sol in sols:
+            fout.write(" ".join(str(int(i)) for i in sol) + "\n")
