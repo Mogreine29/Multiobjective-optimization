@@ -99,7 +99,7 @@ def voisinage(x):
     # attention ici on return toutes les permutations possibles = len(x)! possibilités
     # l'idée est d'explorer les voisins pour arriver à un meilleur et dès qu'on a un meilleur alors on stop l'exploration
     # il faudra probablement modifier cela après
-    return list(map(np.array, permutations(x)))
+    return map(np.array,permutations(x))
 
 
 # fonction qui cherche dominance x domine y 
