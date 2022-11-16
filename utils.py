@@ -75,18 +75,13 @@ def score(sol, d, nobj):
     return tuple(obj)
 
 
-# calcul du hypervolume
-def hypervolume(ref_point,A):
-    '''
-    ref_point = [x,y,z]
-    A = np.array(np.array())
-    '''
+# calcul du hypervolume -> return un %
+def hypervolume(ref_point, A):
     ref_point = np.array(ref_point)
-    A = np.array(A)
-    print(A)
+    A = np.array(list(A))
     ind = HV(ref_point=ref_point)
-    return ind(A)
-
+    hpv = ind(A)
+    return (hpv/np.prod(ref_point))*100
 
 
 # voisinage d'une solution
