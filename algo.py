@@ -1,8 +1,11 @@
 from utils import get_matrix, init_solution, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update
 import time 
 
-file_name = "Data/LAP-8-4objSOL.txt"
-nombre_objectif = 4
+# Paramètres importantes à remplir au début
+file_name = "Data/LAP-8-2objSOL.txt"
+nombre_objectif = 2
+ref = (100,100) # point de référence pour le calcul de l'hypervolume
+
 
 # Lecture des données
 d = read_data(file_name, nombre_objectif)
@@ -13,6 +16,7 @@ mx = get_matrix(file_name, nombre_objectif)
 init = init_solution(mx, nombre_objectif, 10)
 solutions = generate_solution(init, d, nombre_objectif)
 
+# Algo
 def algo(solutions, d, nombre_objectif):
     # stock de l'archive qu'on met à jour
     archive = solutions.copy()
@@ -28,6 +32,7 @@ def algo(solutions, d, nombre_objectif):
                 break
     return archive
 
+# Benchmark temps algo
 start = time.monotonic()
 sols = algo(solutions, d, nombre_objectif)
 end = time.monotonic()
@@ -40,9 +45,8 @@ for sol in sols.keys():
 
 
 # Calcul de l'hypervolume
-ref = (100,100,100,100)
 h = hypervolume(ref, (sols.keys()))
-print(h)
+print(f"Hypervolume = {h} %")
 
 
 
