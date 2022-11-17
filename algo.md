@@ -5,8 +5,8 @@ PLS = Pareto Local Search
 while P != 0 do
     for all x in P do
         for all x' in N(x) do
-            if y(x) < y(x') and y(x)!=y(x') then
-                if Update(A,x') then
+            if y(x') not dominated by y(x) and y(x)!=y(x') then
+                if Update(A, x') then
                     Pa <- Pa U {x'}
                 endif
             endif
@@ -33,4 +33,12 @@ Exemple:
 - machine 5 = job 5
 - machine 6 = job 6
 - machine 7 = job 7
+
+### Initialisation du problème
+Pour initialiser le problème, on fait des combinaisons linéaires des fonctions objectifs 
+et on résoud cela comme un problème mono-objectif avec le solveur linear_sum_assignment de scipy (on veut résoudre un problème d'assignation).
+Cela nous permet de connaître les valeurs extrêmes du front de Pareto. 
+
+### Exploration
+Plusieurs façons d'explorer possibles. Soit on explore tous les voisins. Soit on peut explorer les voisins jusqu'au moment où une solution n'est pas dominée et on repart de cette solution. On pourrait aussi prendre en compte le calcul de l'hypervolume dans l'exploration: est-ce que cette solution va augmenter la taille de mon hypervolume ? 
 
