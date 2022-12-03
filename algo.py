@@ -1,10 +1,10 @@
-from utils import get_matrix, init_solution, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update
+from utils import get_matrix, init_solution, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update, write
 import time 
 
 # Paramètres importantes à remplir au début
-file_name = "Data/LAP-8-2objSOL.txt"
-nombre_objectif = 2
-ref = (100,100) # point de référence pour le calcul de l'hypervolume
+file_name = "Data/input/LAP15-4obj.txt"
+nombre_objectif = 4
+ref = (50,120,150,200) # point de référence pour le calcul de l'hypervolume
 
 
 # Lecture des données
@@ -21,15 +21,14 @@ def algo(solutions, d, nombre_objectif):
     # stock de l'archive qu'on met à jour
     archive = solutions.copy()
     for sol in solutions.values():
-        voisins = voisinage(sol)
-        # parcourir les voisins et chercher une meilleure valeur, si mieux alors stop exploration des voisins
+        voisins = voisinage(sol, 5000000)
+        # parcourir les voisins et chercher une meilleure valeur
         for voisin in voisins:
             score_newsol = score(voisin, d, nombre_objectif)
             # si pas dominé et différent
             if check_domine_diff(score_newsol, archive.keys()):
                 new_sol = {score_newsol: voisin}
                 archive = update(archive, new_sol)
-                break
     return archive
 
 # Benchmark temps algo
@@ -39,14 +38,12 @@ end = time.monotonic()
 print(f"Solutions trouvées en {end-start} s")
 
 print(len(sols))
-for sol in sols.keys():
-    print(sol)
-
 
 
 # Calcul de l'hypervolume
-h = hypervolume(ref, (sols.keys()))
-print(f"Hypervolume = {h} %")
+# h = hypervolume(ref, (sols.keys()))
+# print(f"Hypervolume = {h} %")
 
 
-
+# Stocker la solution obtenue
+# write(sols, file_name)

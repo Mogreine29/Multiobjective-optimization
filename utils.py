@@ -84,17 +84,16 @@ def hypervolume(ref_point, A):
     volume = (np.prod(ref_point, dtype=np.float64))
     return (hpv/volume)*100
 
+
 # voisinage d'une solution
-# pour le cas 1 on a déjà 6 solutions optimales à l'initialisation en optimisant des 
-# combinaisons linéaires des objectifs
-# -> si on intensifie autour des solutions optimales peut être pas toujours intéressant
-# il faut diversifier
-# si on swap tout alors (n*(n+1))//2 possibilités de swap 
-def voisinage(x):
-    # attention ici on return toutes les permutations possibles = len(x)! possibilités
-    # l'idée est d'explorer les voisins pour arriver à un meilleur et dès qu'on a un meilleur alors on stop l'exploration
-    # il faudra probablement modifier cela après
-    return map(np.array,permutations(x))
+# on génère des permutations random (inutile en ce moment car on veut les voisins proches et pas des randoms)
+def voisinage(x, nvoisins):
+    voisins = []
+    for _ in range(nvoisins):
+        voisin = np.random.permutation(x)
+        voisins.append(voisin)
+    return voisins
+
 
 
 # fonction qui cherche dominance x domine y 
