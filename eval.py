@@ -12,12 +12,12 @@ def compare(filenameA, filenameB, reference):
                 # si score 1 dominé alors compteur + 1 et on passe au prochain score du jeu 1
                 if domine(sc2, sc):
                     domine1+=1
-                    continue 
+                    break 
         for sc in data2:
             for sc2 in data1:
                 if domine(sc2,sc):
                     domine2+=1
-                    continue 
+                    break 
     print(f"Nombre de solutions dominées dans 1 par 2 = {domine1}")
     print(f"Nombre de solutions dominées dans 2 par 1 = {domine2}")
     print(f"Nombre de solutions non dominées dans 1 par 2 = {len(data1)-domine1}")
@@ -28,5 +28,5 @@ def compare(filenameA, filenameB, reference):
     print(f"Hypervolume 1 = {hypervolume(reference, data1)}")
     print(f"Hypervolume 2 = {hypervolume(reference, data2)}")
 
-ref = (900,900,900,900)
-compare("Data/solutions/LAP15-4obj.txt", "Data/solutions/tanguySOL154.txt", ref)
+ref = (900,900)
+compare("Data/solutions/test1.txt", "Data/solutions/test2.txt", ref)
