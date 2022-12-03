@@ -4,19 +4,20 @@ from scipy.optimize import linear_sum_assignment
 from itertools import product, permutations
 from pymoo.indicators.hv import HV 
 
-# lit les données et return un dictionnaire (machine, job): [f obj1, f obj2]
+# lit les données et return un dictionnaire (machine, job): [f obj1, f obj2, f obj3]
 def read_data(file_name, nobj):
     with open(file_name, 'r') as fin:
         taille = int(fin.readline())
         # dico (machine, job): (f obj1, f obj2, ..)
         d = defaultdict(list)
+        # parcourir les n objectifs
         for _ in range(nobj):
-            m = 0
-            for j in range(taille):
+            # parcourir les machines
+            for machine in range(taille):
                 line = list(map(int,fin.readline().strip().split()))
-                for i,j in enumerate(line):
-                    d[(m,i)].append(j)
-                m += 1           
+                # parcourir les jobs
+                for job, f in enumerate(line):
+                    d[(machine, job)].append(f)     
     return d
 
 
@@ -34,13 +35,11 @@ def get_matrix(file_name, nobj):
     return matrices
 
 
-# objectif = trouver la solution exacte pour chaque objectif séparément pour trouver les valeurs extrêmes
-# size = coef
-# nobjectif
-def init_solution(mx, nobj, max_coef):
-    # génération de coefficients pour les combinaisons linéaires des fonctions objectifs
-    # TODO si rapport coef est le même alors pas besoin car on connait déjà -> exemple (2,2) similaire à (1,1) : trier ici directement au lieu de trier les solutions après
-    x = [int(i) for i in range(max_coef+1)]
+# initialisation des solutions en résolvant le problème de façon exacte comme si on avait un seul objecitf = combinaison linéaire des obj
+# -> trouver la solution exacte pour chaque objectif séparément pour trouver les valeurs extrêmes
+def init_combinaisons(mx, nobj, max_coef):
+    # génération de coefficients pour les combinaisons linéaires des fonctions objectifs (+0.1 si jamais 2 possibilités pour un objectif, pour prendre le meilleur pour n obj)
+    x = [int(i)+0.1 for i in range(max_coef+1)]
     coef = []
     for iter in product(x,repeat = nobj):
         if sum(iter)>0:
@@ -50,6 +49,7 @@ def init_solution(mx, nobj, max_coef):
     for c in coef:
         m = np.zeros(shape=(mx[0].shape[0], mx[0].shape[1]))
         for i,z in enumerate(c):
+            # créer une matrice m qui est la somme pondérée des objectifs avec une pondération différente pour chaque objectif
             m+=z*mx[i]
         row_ind, col_ind = linear_sum_assignment(m)
         sols.append(col_ind) 
@@ -57,6 +57,24 @@ def init_solution(mx, nobj, max_coef):
     solutions = np.unique(sols, axis=0)
     return solutions
 
+# initialisation de solution de façon random
+# on part des solutions générées avec les combinaisons et si on trouve une solution non dominée on la garde
+def init_random(sols, size, d, nobj):
+    x = list(sols.values())[0]
+    # toutes les permutations = generator = peu couteux en mémoire
+    all_permutations = permutations(x)
+    i = 0
+    while i < size:
+        permut = np.array(next(all_permutations))
+        score_permut = score(permut, d, nobj)
+        # si pas dominé et différent
+        if check_domine_diff(score_permut, sols.keys()):
+            new_sol = {score_permut: permut}
+            sols = update(sols, new_sol)
+            i+=1    
+    return sols
+
+    
 # permet de lier à chaque solution trouvée son score au format {score:solution}
 def generate_solution(solutions, d, nobj):
     # stocker les vecteurs de solutions sous la forme d'un dico {(f1,f2,..): [vecteur]}
@@ -104,7 +122,6 @@ def domine(x, y):
     return (x<=y).all() and (x<y).any()
 
 # check si un nouveau score domine au moins un des scores des solutions actuelles de l'archive x
-# TODO : probablement possible d'avoir une meilleure complexité
 def check_domine_diff(new_score, x):
     for score in x:
         if domine(score, new_score):
