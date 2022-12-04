@@ -40,19 +40,17 @@ def get_matrix(file_name, nobj):
 def init_combinaisons(mx, nobj, max_coef):
     # génération de coefficients pour les combinaisons linéaires des fonctions objectifs (+0.1 si jamais 2 possibilités pour un objectif, pour prendre le meilleur pour n obj)
     x = [int(i)+0.1 for i in range(max_coef+1)]
-    coef = []
-    for iter in product(x,repeat = nobj):
-        if sum(iter)>0:
-            coef.append(iter)
+    coef = product(x, repeat = nobj)
     # multiplication des fonctions objectifs par ces coefficients et calcul du vecteur optimal pour chaque combinaison linéaire
     sols = []
     for c in coef:
-        m = np.zeros(shape=(mx[0].shape[0], mx[0].shape[1]))
-        for i,z in enumerate(c):
-            # créer une matrice m qui est la somme pondérée des objectifs avec une pondération différente pour chaque objectif
-            m+=z*mx[i]
-        row_ind, col_ind = linear_sum_assignment(m)
-        sols.append(col_ind) 
+        if sum(c)>0:
+            m = np.zeros(shape=(mx[0].shape[0], mx[0].shape[1]))
+            for i,z in enumerate(c):
+                # créer une matrice m qui est la somme pondérée des objectifs avec une pondération différente pour chaque objectif
+                m+=z*mx[i]
+            row_ind, col_ind = linear_sum_assignment(m)
+            sols.append(col_ind) 
     # on veut les solutions uniques
     solutions = np.unique(sols, axis=0)
     return solutions
@@ -104,13 +102,17 @@ def hypervolume(ref_point, A):
 
 
 # voisinage d'une solution
-# on génère des permutations random (inutile en ce moment car on veut les voisins proches et pas des randoms)
-def voisinage(x, nvoisins):
+def voisinage(x):
+    # trouver tous les voisins de x
     voisins = []
-    for _ in range(nvoisins):
-        voisin = np.random.permutation(x)
-        voisins.append(voisin)
-    return voisins
+    for i in range(len(x)):
+        for j in range(i+1, len(x)):
+            temp = x.copy()
+            temp[i], temp[j] = temp[j], temp[i]
+            voisins.append(temp)
+    return voisins 
+
+    
 
 
 
