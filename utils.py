@@ -65,7 +65,10 @@ def init_random(sols, size, d, nobj):
     all_permutations = permutations(x)
     i = 0
     while i < size:
-        permut = np.array(next(all_permutations))
+        try:
+            permut = np.array(next(all_permutations))
+        except StopIteration:
+            break
         score_permut = score(permut, d, nobj)
         # si pas dominé et différent
         if check_domine_diff(score_permut, sols.keys()):
