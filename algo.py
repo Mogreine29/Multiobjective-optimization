@@ -1,12 +1,12 @@
 from utils import get_matrix, init_combinaisons, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update, write, init_random
-import time 
+import time
 
 # Paramètres importantes à remplir au début
 file_name = "Data/input/LAP15-4obj.txt"
 nombre_objectif = 4
-ref = (50,120,150,200) # point de référence pour le calcul de l'hypervolume
+ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
 taille_init_random = 0
-taille_coef_combi = 50
+taille_coef_combi = 1
 
 # Lecture des données
 d = read_data(file_name, nombre_objectif)
@@ -27,7 +27,9 @@ print(f"Temps d'initialisation : {end - start}")
 def algo(solutions, d, nombre_objectif):
     # stock de l'archive qu'on met à jour
     archive = solutions.copy()
-    for sol in solutions.values():
+    # solutions à explorer
+    sols = list(solutions.values()).copy()
+    for sol in sols:
         voisins = voisinage(sol)
         # parcourir les voisins et chercher une meilleure valeur
         for voisin in voisins:
@@ -36,7 +38,9 @@ def algo(solutions, d, nombre_objectif):
             if check_domine_diff(score_newsol, archive.keys()):
                 new_sol = {score_newsol: voisin}
                 archive = update(archive, new_sol)
+                sols.append(voisin)
     return archive
+
 
 # Benchmark temps algo
 start2 = time.monotonic()
@@ -46,11 +50,9 @@ print(f"Solutions trouvées en {end2-start2} s")
 
 print(len(sols))
 
-
 # Calcul de l'hypervolume
 # h = hypervolume(ref, (sols.keys()))
 # print(f"Hypervolume = {h} %")
-
 
 # Stocker la solution obtenue
 write(sols, file_name)
