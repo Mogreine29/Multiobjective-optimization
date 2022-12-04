@@ -80,8 +80,9 @@ def generate_solution(solutions, d, nobj):
     # stocker les vecteurs de solutions sous la forme d'un dico {(f1,f2,..): [vecteur]}
     score_dict = dict()
     for sol in solutions:
-        # update à chaque fois en vérifiant la dominance des points
-        score_dict = update(score_dict, {tuple(score(sol, d, nobj)): sol})
+        if check_domine_diff(score(sol, d, nobj), score_dict):
+            # update à chaque fois en vérifiant la dominance des points
+            score_dict = update(score_dict, {tuple(score(sol, d, nobj)): sol})
     return score_dict
 
 
@@ -116,7 +117,7 @@ def voisinage(x):
     return voisins
 
 
-# fonction qui cherche dominance x domine y
+# fonction qui cherche si x domine y
 # -> il faut une f obj > et les autres >=
 def domine(x, y):
     x = np.array(x)
@@ -134,18 +135,10 @@ def check_domine_diff(new_score, x):
     return False
 
 
-# TODO: pas optimal de mettre à jour comme ça en terme de complexité algorithmique-> réfléchir à une méthode plus intelligente
 # x = archive, y = nouvelle solution
 # si y est dominé par x alors pas d'update, si y pas dominé alors y dans archive et supprimer de l'archive les solutions dominées par y
 def update(x, y):
-    # si y dominé par une des solutions de x alors on ne met pas à jour
-    # il faut regarder au niveau des clés car clés = score
-    scores = x.keys()
     new_score = tuple(y.keys())[0]
-    for sol in scores:
-        if domine(sol, new_score):
-            return x
-    # si pas alors on garde seulemlent les solutions non dominées
     good = dict()
     for k, v in x.items():
         if not domine(new_score, k):
