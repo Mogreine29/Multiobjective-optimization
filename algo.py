@@ -1,9 +1,10 @@
 from utils import get_matrix, init_combinaisons, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update, write, init_random
 import time
+import numpy as np
 
 # Paramètres importantes à remplir au début
-file_name = "Data/input/LAP15-4obj.txt"
-nombre_objectif = 4
+file_name = "Data/input/LAP-8-3objSOL.txt"
+nombre_objectif = 3
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
 taille_init_random = 0
 taille_coef_combi = 1
@@ -16,9 +17,10 @@ start = time.monotonic()
 # Initialisation des solutions
 sols = init_combinaisons(mx, nombre_objectif, taille_coef_combi)
 solutions = generate_solution(sols, d, nombre_objectif)
-print('random')
 print(len(solutions))
+print('random')
 all_solutions = init_random(solutions, taille_init_random, d, nombre_objectif)
+print('after random', len(all_solutions))
 end = time.monotonic()
 print(f"Temps d'initialisation : {end - start}")
 
@@ -34,6 +36,9 @@ def algo(solutions, d, nombre_objectif):
         # parcourir les voisins et chercher une meilleure valeur
         for voisin in voisins:
             score_newsol = score(voisin, d, nombre_objectif)
+            # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
+            if score_newsol in archive.keys() and np.all(np.all(voisin!=sols, axis=1)):
+                sols.append(voisin)
             # si pas dominé et différent
             if check_domine_diff(score_newsol, archive.keys()):
                 new_sol = {score_newsol: voisin}
