@@ -1,4 +1,4 @@
-from utils import get_matrix, init_combinaisons, read_data, score, hypervolume, generate_solution, voisinage, check_domine_diff, update, write, init_random
+from utils import get_matrix, init_combinaisons, read_data, score, generate_solution, voisinage, check_domine_diff, update, write, init_random
 import time
 import numpy as np
 
@@ -6,7 +6,8 @@ import numpy as np
 file_name = "Data/input/LAP15-4obj.txt"
 nombre_objectif = 4
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
-taille_init_random = 100
+taille_init_random = 5 
+taille_random = 10
 taille_coef_combi = 1
 
 # Lecture des données
@@ -32,6 +33,9 @@ def algo(solutions, d, nombre_objectif):
         archive = solutions.copy()
         # solutions à explorer
         sols = list(solutions.values()).copy()
+    x = sols[0]
+    for _ in range(taille_random):
+        sols.append(np.random.permutation(x))
         for sol in sols:
             voisins = voisinage(sol)
             # parcourir les voisins et chercher une meilleure valeur
@@ -48,6 +52,7 @@ def algo(solutions, d, nombre_objectif):
                     new_sol = {score_newsol: voisin}
                     archive = update(archive, new_sol)
                     sols.append(voisin)
+        print(len(archive.keys()))
     except KeyboardInterrupt:
         write(archive,"AAAA.txt" )
     return archive
@@ -56,7 +61,8 @@ def algo(solutions, d, nombre_objectif):
 
 # Benchmark temps algo
 start2 = time.monotonic()
-sols = algo(all_solutions, d, nombre_objectif)
+for _ in range(10):
+    all_solutions = algo(all_solutions, d, nombre_objectif)
 end2 = time.monotonic()
 print(f"Solutions trouvées en {end2-start2} s")
 

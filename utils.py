@@ -75,8 +75,8 @@ def init_random(sols, size, d, nobj):
             new_sol = {score_permut: permut}
             sols = update(sols, new_sol)
             i += 1
+            print('i', i)
     return sols
-
 
 # permet de lier à chaque solution trouvée son score au format {score:solution}
 def generate_solution(solutions, d, nobj):
