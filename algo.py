@@ -3,11 +3,11 @@ import time
 import numpy as np
 
 # Paramètres importantes à remplir au début
-file_name = "Data/input/LAP-8-3objSOL.txt"
-nombre_objectif = 3
+file_name = "Data/input/LAP15-4obj.txt"
+nombre_objectif = 4
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
-taille_init_random = 0
-taille_coef_combi = 2
+taille_init_random = 100
+taille_coef_combi = 1
 
 # Lecture des données
 d = read_data(file_name, nombre_objectif)
@@ -27,27 +27,31 @@ print(f"Temps d'initialisation : {end - start}")
 
 # Algo
 def algo(solutions, d, nombre_objectif):
-    # stock de l'archive qu'on met à jour
-    archive = solutions.copy()
-    # solutions à explorer
-    sols = list(solutions.values()).copy()
-    for sol in sols:
-        voisins = voisinage(sol)
-        # parcourir les voisins et chercher une meilleure valeur
-        for voisin in voisins:
-            # si voisin déjà dans sols alors on passe
-            if np.any(np.all(voisin==sols, axis = 1)):
-                continue
-            score_newsol = score(voisin, d, nombre_objectif)
-            # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
-            if score_newsol in archive.keys():
-                sols.append(voisin)
-            # si pas dominé et différent
-            if check_domine_diff(score_newsol, archive.keys()):
-                new_sol = {score_newsol: voisin}
-                archive = update(archive, new_sol)
-                sols.append(voisin)
+    try:
+        # stock de l'archive qu'on met à jour
+        archive = solutions.copy()
+        # solutions à explorer
+        sols = list(solutions.values()).copy()
+        for sol in sols:
+            voisins = voisinage(sol)
+            # parcourir les voisins et chercher une meilleure valeur
+            for voisin in voisins:
+                # si voisin déjà dans sols alors on passe
+                if np.any(np.all(voisin==sols, axis = 1)):
+                    continue
+                score_newsol = score(voisin, d, nombre_objectif)
+                # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
+                if score_newsol in archive.keys():
+                    sols.append(voisin)
+                # si pas dominé et différent
+                if check_domine_diff(score_newsol, archive.keys()):
+                    new_sol = {score_newsol: voisin}
+                    archive = update(archive, new_sol)
+                    sols.append(voisin)
+    except KeyboardInterrupt:
+        write(archive,"AAAA.txt" )
     return archive
+
 
 
 # Benchmark temps algo
@@ -63,4 +67,4 @@ print(len(sols))
 # print(f"Hypervolume = {h} %")
 
 # Stocker la solution obtenue
-write(sols, file_name)
+write(sols, "AAAA.txt")
