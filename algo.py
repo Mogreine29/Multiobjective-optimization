@@ -33,26 +33,26 @@ def algo(solutions, d, nombre_objectif):
         archive = solutions.copy()
         # solutions à explorer
         sols = list(solutions.values()).copy()
-    x = sols[0]
-    for _ in range(taille_random):
-        sols.append(np.random.permutation(x))
-        for sol in sols:
-            voisins = voisinage(sol)
-            # parcourir les voisins et chercher une meilleure valeur
-            for voisin in voisins:
-                # si voisin déjà dans sols alors on passe
-                if np.any(np.all(voisin==sols, axis = 1)):
-                    continue
-                score_newsol = score(voisin, d, nombre_objectif)
-                # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
-                if score_newsol in archive.keys():
-                    sols.append(voisin)
-                # si pas dominé et différent
-                if check_domine_diff(score_newsol, archive.keys()):
-                    new_sol = {score_newsol: voisin}
-                    archive = update(archive, new_sol)
-                    sols.append(voisin)
-        print(len(archive.keys()))
+        x = sols[0]
+        for _ in range(taille_random):
+            sols.append(np.random.permutation(x))
+            for sol in sols:
+                voisins = voisinage(sol)
+                # parcourir les voisins et chercher une meilleure valeur
+                for voisin in voisins:
+                    # si voisin déjà dans sols alors on passe
+                    if np.any(np.all(voisin==sols, axis = 1)):
+                        continue
+                    score_newsol = score(voisin, d, nombre_objectif)
+                    # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
+                    if score_newsol in archive.keys():
+                        sols.append(voisin)
+                    # si pas dominé et différent
+                    if check_domine_diff(score_newsol, archive.keys()):
+                        new_sol = {score_newsol: voisin}
+                        archive = update(archive, new_sol)
+                        sols.append(voisin)
+                print(len(archive.keys()))
     except KeyboardInterrupt:
         write(archive,"AAAA.txt" )
     return archive
