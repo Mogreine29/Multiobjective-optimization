@@ -3,12 +3,12 @@ import time
 import numpy as np
 
 # Paramètres importantes à remplir au début
-file_name = "Data/input/LAP30-4obj.txt"
-nombre_objectif = 4
+file_name = "Data/input/LAP-8-2objSOL.txt"
+nombre_objectif = 2
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
-taille_init_random = 50 
-taille_random = 100
-taille_coef_combi = 1
+taille_init_random = 10
+taille_random = 0
+taille_coef_combi = 10
 
 # Lecture des données
 d = read_data(file_name, nombre_objectif)
@@ -62,8 +62,7 @@ def algo(solutions, d, nombre_objectif):
 
 # Benchmark temps algo
 start2 = time.monotonic()
-for _ in range(10):
-    all_solutions = algo(all_solutions, d, nombre_objectif)
+sols = algo(all_solutions, d, nombre_objectif)
 end2 = time.monotonic()
 print(f"Solutions trouvées en {end2-start2} s")
 
