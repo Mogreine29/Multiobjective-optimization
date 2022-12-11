@@ -3,11 +3,11 @@ import time
 import numpy as np
 
 # Paramètres importantes à remplir au début
-file_name = "Data/input/LAP15-4obj.txt"
+file_name = "Data/input/LAP30-4obj.txt"
 nombre_objectif = 4
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
-taille_init_random = 5 
-taille_random = 10
+taille_init_random = 50 
+taille_random = 100
 taille_coef_combi = 1
 
 # Lecture des données
@@ -47,6 +47,7 @@ def algo(solutions, d, nombre_objectif):
                     # si solution déjà présente alors on ne met pas à jour l'archive mais on veut quand même explorer les voisins de cette solution
                     if score_newsol in archive.keys():
                         sols.append(voisin)
+                        continue
                     # si pas dominé et différent
                     if check_domine_diff(score_newsol, archive.keys()):
                         new_sol = {score_newsol: voisin}
@@ -54,7 +55,7 @@ def algo(solutions, d, nombre_objectif):
                         sols.append(voisin)
                 print(len(archive.keys()))
     except KeyboardInterrupt:
-        write(archive,"AAAA.txt" )
+        write(archive,"30.txt" )
     return archive
 
 
