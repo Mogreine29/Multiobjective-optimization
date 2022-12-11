@@ -24,21 +24,23 @@ def compare(filenameA, filenameB, reference):
         data2 = [tuple(map(int, line.strip().split())) for line in f2]
         domine1, same = number_dominated(data1, data2)
         domine2, same = number_dominated(data2, data1)
+    print(f"Nombre de solutions de A = {len(data1)}")
+    print(f"Nombre de solutions de B = {len(data2)}")
     print(f"Nombre de solutions identiques : {same}")
-    print(f"Nombre de solutions dominées dans 1 par 2 = {domine1}")
-    print(f"Nombre de solutions dominées dans 2 par 1 = {domine2}")
+    print(f"Nombre de solutions dominées dans A par B = {domine1}")
+    print(f"Nombre de solutions dominées dans B par A = {domine2}")
     print(
-        f"Nombre de solutions non dominées dans 1 par 2 = {len(data1)-domine1}"
+        f"Nombre de solutions non dominées dans A par B = {len(data1)-domine1}"
     )
     print(
-        f"Nombre de solutions non dominées dans 2 par 1 = {len(data2)-domine2}"
+        f"Nombre de solutions non dominées dans B par A = {len(data2)-domine2}"
     )
 
     print('')
 
-    print(f"Hypervolume 1 = {hypervolume(reference, data1)}")
-    print(f"Hypervolume 2 = {hypervolume(reference, data2)}")
+    print(f"Hypervolume de A = {hypervolume(reference, data1)}")
+    print(f"Hypervolume de B = {hypervolume(reference, data2)}")
 
 
 ref = (900, 900, 900, 900)
-compare("Data/solutions/LAP15-4obj.txt", "Data/solutions/15.txt", ref)
+compare("Data/solutions/30.txt", "Data/solutions/tanguySOL304.txt", ref)
