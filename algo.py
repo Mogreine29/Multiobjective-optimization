@@ -6,9 +6,9 @@ import numpy as np
 file_name = "Data/input/LAP30-4obj.txt"
 nombre_objectif = 4
 ref = (50, 120, 150, 200)  # point de référence pour le calcul de l'hypervolume
-taille_init_random = 50
+taille_init_random = 20
 taille_random = 0
-taille_coef_combi = 60
+taille_coef_combi = 70
 
 # Lecture des données
 d = read_data(file_name, nombre_objectif)
